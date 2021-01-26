@@ -228,8 +228,21 @@ class Rook(W):
         return w
 
     @classmethod
-    def from_xarray(cls, da, z_value=None, coords_labels={}, sparse=False, **kwargs):
-        """Construct a weights object from a ``xarray.DataArray``.
+    def from_xarray(
+        cls,
+        da,
+        z_value=None,
+        coords_labels={},
+        k=1,
+        include_nodata=False,
+        n_jobs=1,
+        sparse=True,
+        **kwargs,
+    ):
+        """
+        Construct a weights object from a ``xarray.DataArray`` with an additional
+        attribute index containing coordinate values of the raster
+        in the form of ``pandas.Index or ``pandas.MultiIndex``.
 
         Parameters
         ----------
@@ -246,14 +259,29 @@ class Rook(W):
         sparse : bool
             The type of weight object. Default is ``False``.
             For sparse set to ``True``.
+        k : int
+            Order of contiguity, this will select all neighbors up to ``k``th order.
+            Default is ``1``.
+        include_nodata : bool
+            If ``True,`` missing values will be assumed as non-missing when
+            selecting higher_order neighbors. Default is ``False``.
+        n_jobs : int
+            Number of cores to be used in the sparse weight construction. If ``-1``,
+            all available cores are used. Default is ``1``.
         **kwargs : keyword arguments
             Optional arguments passed when ``sparse=False``.
 
         Returns
         -------
         w : {libpysal.weights.W, libpysal.weights.WSP}
-            An instance of spatial weights class `W` or `WSP`.
-
+            An instance of spatial weights class `W` or `WSP` with an index attribute.
+        
+        Notes
+        -----
+        1. Lower order contiguities are also selected.
+        2. Returned object contains and ``index`` attribute that includes a 
+        ``pandas.MultiIndex`` object from the ``xarray.DataArray``.
+        
         See Also
         --------
 
@@ -263,9 +291,9 @@ class Rook(W):
         """
 
         if sparse:
-            w = da2WSP(da, "rook", z_value, coords_labels)
+            w = da2WSP(da, "rook", z_value, coords_labels, k, include_nodata)
         else:
-            w = da2W(da, "rook", z_value, coords_labels, **kwargs)
+            w = da2W(da, "rook", z_value, coords_labels, k, include_nodata, **kwargs)
 
         return w
 
@@ -474,8 +502,21 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_xarray(cls, da, z_value=None, coords_labels={}, sparse=False, **kwargs):
-        """Construct a weights object from a ``xarray.DataArray``.
+    def from_xarray(
+        cls,
+        da,
+        z_value=None,
+        coords_labels={},
+        k=1,
+        include_nodata=False,
+        n_jobs=1,
+        sparse=True,
+        **kwargs,
+    ):
+        """
+        Construct a weights object from a ``xarray.DataArray`` with an additional
+        attribute index containing coordinate values of the raster
+        in the form of ``pandas.Index`` or ``pandas.MultiIndex``.
 
         Parameters
         ----------
@@ -492,14 +533,29 @@ class Queen(W):
         sparse : bool
             The type of weight object. Default is ``False``.
             For sparse set to ``True``.
+        k : int
+            Order of contiguity, this will select all neighbors up to ``k``th order.
+            Default is ``1``.
+        include_nodata : bool
+            If ``True``, missing values will be assumed as non-missing when
+            selecting higher_order neighbors. Default is ``False``.
+        n_jobs : int
+            Number of cores to be used in the sparse weight construction. If ``-1``,
+            all available cores are used. Default is ``1``.
         **kwargs : keyword arguments
             Optional arguments passed when ``sparse=False``.
 
         Returns
         -------
         w : {libpysal.weights.W, libpysal.weights.WSP}
-            An instance of spatial weights class `W` or `WSP`.
-
+            An instance of spatial weights class `W` or `WSP` with an index attribute.
+        
+        Notes
+        -----
+        1. Lower order contiguities are also selected.
+        2. Returned object contains `index` attribute that includes a 
+        ``pandas.MultiIndex`` object from the ``xarray.DataArray``.
+        
         See Also
         --------
 
@@ -509,9 +565,9 @@ class Queen(W):
         """
 
         if sparse:
-            w = da2WSP(da, "queen", z_value, coords_labels)
+            w = da2WSP(da, "queen", z_value, coords_labels, k, include_nodata)
         else:
-            w = da2W(da, "queen", z_value, coords_labels, **kwargs)
+            w = da2W(da, "queen", z_value, coords_labels, k, include_nodata, **kwargs)
         return w
 
 
