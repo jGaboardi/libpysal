@@ -492,6 +492,48 @@ class Graph(SetOpsMixin):
         return cls.from_arrays(head, tail, weight)
 
     @classmethod
+    def from_networkx(cls, graph, weight_col="weight"):
+        """Generate a Graph from networkx graph.
+
+        Parameters
+        ----------
+        graph : ``networkx`` graph object
+
+        weight_col : str, default "weight"
+            name of the edge attribute to use as weights. If the attribute
+            doesn't exist, binary weights of 1 are used.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph based on networkx graph
+
+        Examples
+        --------
+        >>> import networkx as nx
+        >>> nx_graph = nx.path_graph(5)
+        >>> g = graph.Graph.from_networkx(nx_graph)
+        >>> g.n
+        5
+        """
+        try:
+            import networkx as nx
+        except ImportError:
+            raise ImportError("NetworkX is required.") from None
+
+        nodes = list(graph.nodes())
+
+        try:
+            sparse_array = nx.to_scipy_sparse_array(
+                graph, nodelist=nodes, weight=weight_col
+            )
+        except KeyError:
+            # If weight_col doesn't exist, use binary weights
+            sparse_array = nx.to_scipy_sparse_array(graph, nodelist=nodes, weight=None)
+
+        return cls.from_sparse(sparse_array, ids=nodes)
+
+    @classmethod
     def build_block_contiguity(cls, regimes):
         """Generate Graph from block contiguity (regime neighbors)
 
