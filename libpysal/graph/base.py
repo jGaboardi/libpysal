@@ -492,16 +492,15 @@ class Graph(SetOpsMixin):
         return cls.from_arrays(head, tail, weight)
 
     @classmethod
-    def from_networkx(cls, graph, weight_col="weight"):
+    def from_networkx(cls, graph, weight=None):
         """Generate a Graph from networkx graph.
 
         Parameters
         ----------
         graph : ``networkx`` graph object
 
-        weight_col : str, default "weight"
-            name of the edge attribute to use as weights. If the attribute
-            doesn't exist, binary weights of 1 are used.
+        weight : str | None, default None
+            name of the edge attribute to use as weights.
 
         Returns
         -------
@@ -523,13 +522,9 @@ class Graph(SetOpsMixin):
 
         nodes = list(graph.nodes())
 
-        try:
-            sparse_array = nx.to_scipy_sparse_array(
-                graph, nodelist=nodes, weight=weight_col
-            )
-        except KeyError:
-            # If weight_col doesn't exist, use binary weights
-            sparse_array = nx.to_scipy_sparse_array(graph, nodelist=nodes, weight=None)
+        sparse_array = nx.to_scipy_sparse_array(
+            graph, nodelist=nodes, weight=weight
+        )
 
         return cls.from_sparse(sparse_array, ids=nodes)
 
