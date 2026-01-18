@@ -522,9 +522,7 @@ class Graph(SetOpsMixin):
 
         nodes = list(graph.nodes())
 
-        sparse_array = nx.to_scipy_sparse_array(
-            graph, nodelist=nodes, weight=weight
-        )
+        sparse_array = nx.to_scipy_sparse_array(graph, nodelist=nodes, weight=weight)
 
         return cls.from_sparse(sparse_array, ids=nodes)
 
