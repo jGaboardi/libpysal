@@ -478,14 +478,18 @@ class TestBase:
         nxg.add_edge(0, 1, custom_weight=0.5)
         nxg.add_edge(1, 2, custom_weight=1.5)
         g = graph.Graph.from_networkx(nxg, weight_col="custom_weight")
-        expected = graph.Graph.from_arrays([0, 1, 1, 2], [1, 0, 2, 1], [0.5, 0.5, 1.5, 1.5])  # noqa: E501
+        expected = graph.Graph.from_arrays(
+            [0, 1, 1, 2], [1, 0, 2, 1], [0.5, 0.5, 1.5, 1.5]
+        )  # noqa: E501
         assert g == expected
 
         nxg = nx.Graph()
         nxg.add_edge(0, 1, other_attr=0.5)
         nxg.add_edge(1, 2, other_attr=1.5)
         g = graph.Graph.from_networkx(nxg, weight_col="nonexistent_weight")
-        expected = graph.Graph.from_arrays([0, 1, 1, 2], [1, 0, 2, 1], [1.0, 1.0, 1.0, 1.0]) # noqa : E501
+        expected = graph.Graph.from_arrays(
+            [0, 1, 1, 2], [1, 0, 2, 1], [1.0, 1.0, 1.0, 1.0]
+        )  # noqa : E501
         assert g == expected
 
     @pytest.mark.parametrize("y", [3, 5])
