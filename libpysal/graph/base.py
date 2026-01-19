@@ -523,12 +523,14 @@ class Graph(SetOpsMixin):
             raise ImportError("NetworkX is required.") from None
 
         nodes = list(graph.nodes())
-        
+
         # Check if the specified weight attribute exists on edges
         if weight is not None:
             for _u, _v, edge_data in graph.edges(data=True):
                 if weight not in edge_data:
-                    raise ValueError(f"The weight attribute '{weight}' does not exist on all edges.")
+                    raise ValueError(
+                        f"The weight attribute '{weight}' does not exist on all edges."
+                    )
 
         sparse_array = nx.to_scipy_sparse_array(graph, nodelist=nodes, weight=weight)
 

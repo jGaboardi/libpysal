@@ -486,7 +486,9 @@ class TestBase:
         nxg = nx.Graph()
         nxg.add_edge(0, 1, other_attr=0.5)
         nxg.add_edge(1, 2, other_attr=1.5)
-        with pytest.raises(ValueError, match="The weight attribute 'nonexistent_weight' does not exist"):
+        with pytest.raises(
+            ValueError, match="The weight attribute 'nonexistent_weight' does not exist"
+        ):
             graph.Graph.from_networkx(nxg, weight="nonexistent_weight")
 
     @pytest.mark.parametrize("y", [3, 5])
