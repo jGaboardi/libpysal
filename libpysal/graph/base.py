@@ -493,19 +493,21 @@ class Graph(SetOpsMixin):
 
     @classmethod
     def from_networkx(cls, graph, weight=None):
-        """Generate a Graph from networkx graph.
+        """Generate a Graph from a NetworkX graph.
 
         Parameters
         ----------
         graph : ``networkx`` graph object
-
+            representation of the graph as a :class:`networkx.Graph` or
+            :class:`networkx.DiGraph`. Multi-graphs are not supported as they do
+            not translate to a unique weight between two nodes.
         weight : str | None, default None
             name of the edge attribute to use as weights.
 
         Returns
         -------
         Graph
-            libpysal.graph.Graph based on networkx graph
+            libpysal.graph.Graph based on NetworkX graph
 
         Examples
         --------
