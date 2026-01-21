@@ -492,6 +492,51 @@ class Graph(SetOpsMixin):
         return cls.from_arrays(head, tail, weight)
 
     @classmethod
+    def from_networkx(cls, graph, weight=None):
+        """Generate a Graph from a NetworkX graph.
+
+        Parameters
+        ----------
+        graph : ``networkx`` graph object
+            representation of the graph as a :class:`networkx.Graph` or
+            :class:`networkx.DiGraph`. Multi-graphs are not supported as they do
+            not translate to a unique weight between two nodes.
+        weight : str | None, default None
+            name of the edge attribute to use as weights.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph based on NetworkX graph
+
+        Examples
+        --------
+        >>> import networkx as nx
+        >>> nx_graph = nx.path_graph(5)
+        >>> g = graph.Graph.from_networkx(nx_graph)
+        >>> g.n
+        5
+        """
+        try:
+            import networkx as nx
+        except ImportError:
+            raise ImportError("NetworkX is required.") from None
+
+        nodes = list(graph.nodes())
+
+        # Check if the specified weight attribute exists on edges
+        if weight is not None:
+            for _u, _v, edge_data in graph.edges(data=True):
+                if weight not in edge_data:
+                    raise ValueError(
+                        f"The weight attribute '{weight}' does not exist on all edges."
+                    )
+
+        sparse_array = nx.to_scipy_sparse_array(graph, nodelist=nodes, weight=weight)
+
+        return cls.from_sparse(sparse_array, ids=nodes)
+
+    @classmethod
     def build_block_contiguity(cls, regimes):
         """Generate Graph from block contiguity (regime neighbors)
 
