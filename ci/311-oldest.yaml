@@ -30,6 +30,7 @@ dependencies:
   - zstd
   - xarray=2023.6
   # - pandarm - requires geopandas 1.1
+  - pandana
   - h3-py<4
   - pip
   - pip:

@@ -511,12 +511,12 @@ class TestMatching:
 
 
 @pytest.mark.network
-# @pytest.mark.skipif(
-#     sys.platform.startswith("win"), reason="pandarm has dtype issues on windows"
-# )
 class TestTravelNetwork:
     def setup_method(self):
-        pandarm = pytest.importorskip("pandarm")
+        try:
+            import pandana as pandarm
+        except ImportError:
+            pandarm = pytest.importorskip("pandarm")
         import pooch
 
         self.net_path = pooch.retrieve(
