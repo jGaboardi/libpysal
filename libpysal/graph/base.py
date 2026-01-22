@@ -1611,21 +1611,21 @@ class Graph(SetOpsMixin):
         taper=True,
         decay=False,
     ):
-        """Generate a Graph based on shortest travel costs from a pandana.Network
+        """Generate a Graph based on shortest travel costs from a pandarm.Network
 
         Parameters
         ----------
         df : geopandas.GeoDataFrame
             geodataframe representing observations which are snapped to the nearest
-            node in the pandana.Network. CRS should be the same as the locations
-            of ``node_x`` and ``node_y`` in the pandana.Network (usually 4326 if network
+            node in the pandarm.Network. CRS should be the same as the locations
+            of ``node_x`` and ``node_y`` in the pandarm.Network (usually 4326 if network
             comes from OSM, but sometimes projected to improve snapping quality).
-        network : pandana.Network
-            pandana Network object describing travel costs between nodes in the study
-            area.  See <https://udst.github.io/pandana/> for more
+        network : pandarm.Network
+            pandarm Network object describing travel costs between nodes in the study
+            area.  See <https://oturns.github.io/pandarm/> for more
         threshold : int
             threshold representing maximum cost distances. This is measured in the same
-            units as the pandana.Network (not influenced by the df.crs in any way). For
+            units as the pandarm.Network (not influenced by the df.crs in any way). For
             travel modes with relatively constant speeds like walking or biking, this is
             usually distance (e.g. meters if the Network is constructed from OSM). For a
             a multimodal or auto network with variable travel speeds, this is usually
@@ -1636,7 +1636,7 @@ class Graph(SetOpsMixin):
             transformation options. Default is None, in which case the Graph weight
             is pure distance between focal and neighbor
         mapping_distance : int
-            snapping tolerance passed to ``pandana.Network.get_node_ids`` that defines
+            snapping tolerance passed to ``pandarm.Network.get_node_ids`` that defines
             the maximum range at which observations are snapped to nearest nodes in the
             network. Default is None
         taper : bool (default: True)
@@ -1659,7 +1659,7 @@ class Graph(SetOpsMixin):
         >>> import geodatasets
         >>> import geopandas as gpd
         >>> import osmnx as ox
-        >>> import pandana as pdna
+        >>> import pandarm
 
         Read an example geodataframe:
 
@@ -1671,16 +1671,16 @@ class Graph(SetOpsMixin):
         >>> nodes, edges = ox.utils_graph.graph_to_gdfs(osm_graph)
         >>> edges = edges.reset_index()
 
-        Generate a routable pandana network from the OSM nodes and edges
+        Generate a routable pandarm network from the OSM nodes and edges
 
-        >>> network = pdna.Network(
+        >>> network = pandarm.Network(
         >>>     edge_from=edges["u"],
         >>>     edge_to=edges["v"],
         >>>     edge_weights=edges[["length"]],
         >>>     node_x=nodes["x"],
         >>>     node_y=nodes["y"],)
 
-        Use the pandana network to compute shortest paths between gdf centroids and
+        Use the pandarm network to compute shortest paths between gdf centroids and
         generate a Graph
 
         >>> G = Graph.build_travel_cost(df.set_geometry(df.centroid), network, 500)
