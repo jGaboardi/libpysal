@@ -596,6 +596,32 @@ def test_tree_haversine_raises(grocs):
         _kernel(coords, k=3, metric="haversine", tree=tree)
 
 
+def test_adaptive_bandwidth_requires_k():
+    """bandwidth='adaptive' without k should raise a ValueError."""
+    with pytest.raises(ValueError, match="bandwidth='adaptive'"):
+        _kernel(lap_coords, bandwidth="adaptive", k=None)
+
+
+def test_adaptive_bandwidth_basic():
+    """bandwidth='adaptive' with k should produce per-observation bandwidths."""
+    k = 5
+    head_f, tail_f, weight_f = _kernel(lap_coords, k=k)
+    head_a, tail_a, weight_a = _kernel(lap_coords, k=k, bandwidth="adaptive")
+
+    # Both should have the same neighbors
+    assert head_a.shape == head_f.shape
+    assert tail_a.shape == tail_f.shape
+
+    # each focal should have exactly k neighbors
+    unique, counts = np.unique(head_a, return_counts=True)
+    assert (counts == k).all()
+
+    assert weight_a.mean() == pytest.approx(0.2950555038)
+    assert weight_a.max() == pytest.approx(0.3981074891)
+
+    assert not np.allclose(weight_a, weight_f)
+
+
 @pytest.mark.parametrize(
     "kernel",
     ["bisquare", "boxcar", "triangular", "tricube", "cosine", "parabolic"],
