@@ -118,11 +118,16 @@ def test_kernel_dispatcher_callable(distances, bandwidth):
 
 
 def test_kernel_dispatcher_invalid_name(distances, bandwidth):
-    with pytest.raises(KeyError):
+    with pytest.raises(ValueError, match="Invalid kernel"):
         kernels.kernel(distances, bandwidth, kernel="not-a-kernel")
 
+def test_kernel_not_callable_or_string(distances, bandwidth):
+    """Ensure invalid kernel type (not string/callable) raises ValueError."""
+
+    with pytest.raises(ValueError, match="kernel must"):
+        kernels.kernel(distances, bandwidth, kernel=123)
 def test_kernel_taper(distances, bandwidth):
-    
+
     result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=True)
     expected = kernels._gaussian(distances, bandwidth)
     expected[distances > bandwidth] = 0.0
@@ -139,3 +144,6 @@ def test_kernel_taper(distances, bandwidth):
     expected = kernels._gaussian(distances, bandwidth)
     expected[distances > taper_val] = 0.0
     np.testing.assert_array_almost_equal(result, expected)
+
+
+
