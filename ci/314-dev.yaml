@@ -36,7 +36,7 @@ dependencies:
       --index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple \
       --extra-index-url https://pypi.org/simple
     - pandas
-    - pulp
+    - pulp<4
     - scikit-learn
     - scipy
     - shapely
