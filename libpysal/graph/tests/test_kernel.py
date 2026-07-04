@@ -502,6 +502,7 @@ def test__kernel_precomputed_exclude_self_weights_affects_ranking():
         assert len(set(neigh_i.tolist())) == k
 
 
+@pytest.mark.network
 def test_tree_parameter_knn(grocs):
     """Test that passing a pre-built tree produces the same results."""
     from scipy import spatial
@@ -521,6 +522,7 @@ def test_tree_parameter_knn(grocs):
     np.testing.assert_array_equal(g1[2], g2[2])  # weight
 
 
+@pytest.mark.network
 @pytest.mark.skipif(not HAS_SKLEARN, reason="scikit-learn not installed")
 def test_tree_parameter_sklearn(grocs):
     """Test that passing a pre-built sklearn tree works."""
@@ -539,6 +541,7 @@ def test_tree_parameter_sklearn(grocs):
     assert len(g[2]) > 0
 
 
+@pytest.mark.network
 def test_tree_parameter_distance_band(grocs):
     """Test that passing a pre-built tree to distance_band works."""
     from scipy import spatial
